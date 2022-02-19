@@ -48,11 +48,16 @@ def generate_caption(context:Context, image, t=0):
     return ' '.join(caption_prefix[1:-1])
 
 
-def generate_captions(image):
+def generate_captions(image, step_callback=None):
     image = np.array(Image.fromarray(image).resize((299,299))).astype('float32') / 255.
+
+    CAPTIONS_NUM = 10
 
     captions = []
     for i in range(10):
+        if step_callback:
+            step_callback(i, CAPTIONS_NUM)
+
         captions.append(generate_caption(context=init_model(), image=image, t=5.))
 
     return captions
