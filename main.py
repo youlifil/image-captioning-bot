@@ -27,7 +27,7 @@ def run_bot():
     @bot.message_handler(content_types=['photo'])
     def generate_image_captions(message):
         print("picture from {}".format(message.from_user.username))
-        bot.send_message(message.chat.id, "Подождите немножко... (множко)")
+        bot.send_message(message.chat.id, "Подождите немножко... (или множко)")
 
         image = message_image(bot, message)
         captions = imcap.generate_captions(image)

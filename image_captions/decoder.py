@@ -1,4 +1,4 @@
-from files import bot_path
+from files import bot_path, download_google_file
 import torch
 import torch.nn as nn
 
@@ -88,7 +88,10 @@ class Decoder():
         self.model = CaptionAttentionNet(vocab_dim, lstm_dim=512, emb_dim=256, dropout=0.3)
 
         print("Loading pretrained weights for CaptionAttentionNet")
-        self.model.load_state_dict(torch.load(bot_path("attnet-250e-30trainbatch.pt")))
+        weights_file = bot_path("attnet-250e-30trainbatch.pt")
+        weights_url = 'https://drive.google.com/uc?id=1pvyVjbwg845rqx_ERZ9uJ7AJ7fgQgz_1'
+        download_google_file(weights_url, weights_file)
+        self.model.load_state_dict(torch.load(weights_file))
         self.model.eval()
 
     def inference(self, image_vector, caption_prefix):
