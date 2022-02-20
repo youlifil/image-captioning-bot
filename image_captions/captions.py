@@ -6,13 +6,16 @@ from image_captions.vocab import Vocab
 import torch
 import torch.nn.functional as F
 import image_captions.files as files
+import image_captions.log as log
 
 class Model: pass
 
 
-def init_model(stuff_folder):
+def init_model(stuff_folder, logger):
     if not hasattr(init_model, "done"): 
         files.set_base(stuff_folder)
+        log.set_logger(logger)
+
         Model.vocab = Vocab()
         Model.image_encoder = ImageEncoder()
         Model.decoder = Decoder(Model.vocab.VOCAB_DIM)

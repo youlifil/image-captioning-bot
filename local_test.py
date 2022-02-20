@@ -1,7 +1,7 @@
 import PIL
 import numpy as np
 import image_captions as imcap
-
+import log
 
 def load_image(path):
     # return plt.imread(path)
@@ -9,13 +9,15 @@ def load_image(path):
 
 
 def run_local_test():
-    print("Initializing model...")
-    imcap.init_model('data')
+    logger = log.logger()
+    
+    logger.info("Initializing model...")
+    imcap.init_model(stuff_folder='data', logger=logger)
 
-    print("Loading image...")
+    logger.info("Loading image...")
     image = load_image('data/test.jpg')
     
-    print("Generating captions...")
+    logger.info("Generating captions...")
     captions = imcap.generate_captions(image)
 
-    print('\n'.join(captions))
+    logger.info('Generated captions are:\n' + '\n'.join(captions))

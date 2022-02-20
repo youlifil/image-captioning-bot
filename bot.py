@@ -1,5 +1,6 @@
 import telebot
 from auth import bot_token
+import log
 from tg_tqdm import tg_tqdm
 
 import PIL
@@ -22,7 +23,8 @@ def _progress_bar(step, total, chat_id):
 
 
 def run_bot():
-    imcap.init_model('data')
+    logger = log.logger()
+    imcap.init_model(stuff_folder='data', logger=logger)
 
     bot = telebot.TeleBot(bot_token)
 
@@ -40,7 +42,7 @@ def run_bot():
     
     @bot.message_handler(content_types=['photo'])
     def receive_image_generate_captions(message):
-        print("picture from {}".format(message.from_user.username))
+        logger.info("picture from {}".format(message.from_user.username))
         bot.send_message(message.chat.id, "Подождите немножко... (или множко)")
 
         image = image_from_message(bot, message)
@@ -49,7 +51,7 @@ def run_bot():
                         step_callback=lambda step, total: _progress_bar(step, total, message.chat.id))
 
         bot.send_message(message.chat.id, '\n'.join(['• ' + cap for cap in captions]))
-        print('\n'.join(captions), '\n')
+        logger.info('Generated captions are:\n' + '\n'.join(captions) + '\n')
 
     bot.polling(non_stop=True)
     

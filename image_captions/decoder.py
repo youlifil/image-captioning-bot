@@ -1,6 +1,7 @@
 from image_captions.files import path, download_google_file
 import torch
 import torch.nn as nn
+import image_captions.log as log
 
 
 class CaptionAttentionNet(nn.Module):
@@ -84,10 +85,12 @@ class CaptionAttentionNet(nn.Module):
 
 class Decoder():
     def __init__(self, vocab_dim):
-        print("Making CaptionAttentionNet model...")
+        logger = log.logger()
+
+        logger.info("Making CaptionAttentionNet model...")
         self.model = CaptionAttentionNet(vocab_dim, lstm_dim=512, emb_dim=256, dropout=0.3)
 
-        print("Loading pretrained weights for CaptionAttentionNet")
+        logger.info("Loading pretrained weights for CaptionAttentionNet")
         weights_file = path("attnet-250e-30trainbatch.pt")
         weights_url = 'https://drive.google.com/uc?id=1pvyVjbwg845rqx_ERZ9uJ7AJ7fgQgz_1'
         download_google_file(weights_url, weights_file)

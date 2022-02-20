@@ -2,6 +2,7 @@ from torchvision.models.inception import Inception3
 import torch.nn.functional as F
 from warnings import warn
 from torch.utils.model_zoo import load_url
+import image_captions.log as log
 
 
 class BeheadedInception3(Inception3):
@@ -42,10 +43,12 @@ class BeheadedInception3(Inception3):
 
 class ImageEncoder():
     def __init__(self) -> None:
-        print("Making BeheadedInception3 model")
+        logger = log.logger()
+        
+        logger.info("Making BeheadedInception3 model")
         model = BeheadedInception3(transform_input=True, init_weights=True)
 
-        print("Loading pretrained weights for BeheadedInception3")
+        logger.info("Loading pretrained weights for BeheadedInception3")
         inception_url = 'https://download.pytorch.org/models/inception_v3_google-1a9a5a14.pth'
         model.load_state_dict(load_url(inception_url))
 
