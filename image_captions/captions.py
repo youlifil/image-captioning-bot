@@ -5,44 +5,39 @@ from image_captions.inception import ImageEncoder
 from image_captions.vocab import Vocab
 import torch
 import torch.nn.functional as F
+import image_captions.files as files
+
+class Model: pass
 
 
-class Context:
-    decoder = None
-    image_encoder = None
-    vocab = None
+def init_model(stuff_folder):
+    if not hasattr(init_model, "done"): 
+        files.set_base(stuff_folder)
+        Model.vocab = Vocab()
+        Model.image_encoder = ImageEncoder()
+        Model.decoder = Decoder(Model.vocab.VOCAB_DIM)
+        init_model.done = True
 
 
-def init_model():
-    if not hasattr(init_model, "context"): 
-        ctx = Context()
-        ctx.vocab = Vocab()
-        ctx.image_encoder = ImageEncoder()
-        ctx.decoder = Decoder(ctx.vocab.VOCAB_DIM)
-        init_model.context = ctx
-
-    return init_model.context
-
-
-def generate_caption(context:Context, image, t=0):
+def _generate_caption(image, t=0):
     with torch.no_grad():
         image = torch.tensor(image.transpose([2, 0, 1]), dtype=torch.float32)
 
-        img_vec = context.image_encoder.image_vector(image)
-        caption_prefix = [context.vocab.BOS_TOKEN]
+        img_vec = Model.image_encoder.image_vector(image)
+        caption_prefix = [Model.vocab.BOS_TOKEN]
 
         for _ in range(100):
-            prefix_ix = [context.vocab.word_to_index.get(word, context.vocab.UNK_IDX) for word in caption_prefix]
+            prefix_ix = [Model.vocab.word_to_index.get(word, Model.vocab.UNK_IDX) for word in caption_prefix]
             prefix_ix = torch.tensor(prefix_ix).unsqueeze(0)
 
-            logits = context.decoder.inference(img_vec, prefix_ix)[0, -1]
+            logits = Model.decoder.inference(img_vec, prefix_ix)[0, -1]
             probs = F.softmax(logits, -1).detach().numpy()
             
             probs = probs ** t / np.sum(probs ** t)
-            next_token = np.random.choice(context.vocab.vocabulary, p=probs)
+            next_token = np.random.choice(Model.vocab.vocabulary, p=probs)
             caption_prefix.append(next_token)
 
-            if next_token == context.vocab.EOS_TOKEN:
+            if next_token == Model.vocab.EOS_TOKEN:
                 break
             
     return ' '.join(caption_prefix[1:-1])
@@ -58,6 +53,6 @@ def generate_captions(image, step_callback=None):
         if step_callback:
             step_callback(i, CAPTIONS_NUM)
 
-        captions.append(generate_caption(context=init_model(), image=image, t=5.))
+        captions.append(_generate_caption(image=image, t=5.))
 
     return captions

@@ -1,20 +1,21 @@
-import matplotlib.pyplot as plt
-from files import bot_path
-from image_captions import generate_captions, init_model
+import PIL
+import numpy as np
+import image_captions as imcap
 
 
 def load_image(path):
-    return plt.imread(path)
+    # return plt.imread(path)
+    return np.array(PIL.Image.open(path))
 
 
 def run_local_test():
-    print("Initializing context...")
-    init_model()
+    print("Initializing model...")
+    imcap.init_model('data')
 
     print("Loading image...")
-    image = load_image(bot_path('test.jpg'))
+    image = load_image('data/test.jpg')
     
     print("Generating captions...")
-    captions = generate_captions(image)
+    captions = imcap.generate_captions(image)
 
     print('\n'.join(captions))
