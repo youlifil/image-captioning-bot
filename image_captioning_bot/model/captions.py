@@ -1,21 +1,17 @@
 import numpy as np
 from PIL import Image
-from image_captions.decoder import Decoder
-from image_captions.inception import ImageEncoder
-from image_captions.vocab import Vocab
+from image_captioning_bot.model.decoder import Decoder
+from image_captioning_bot.model.inception import ImageEncoder
+from image_captioning_bot.model.vocab import Vocab
 import torch
 import torch.nn.functional as F
-import image_captions.files as files
-import image_captions.log as log
+import image_captioning_bot.files as files
 
 class Model: pass
 
 
-def init_model(stuff_folder, logger):
+def init_model():
     if not hasattr(init_model, "done"): 
-        files.set_base(stuff_folder)
-        log.set_logger(logger)
-
         Model.vocab = Vocab()
         Model.image_encoder = ImageEncoder()
         Model.decoder = Decoder(Model.vocab.VOCAB_DIM)

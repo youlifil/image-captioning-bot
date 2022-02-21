@@ -2,7 +2,7 @@ from torchvision.models.inception import Inception3
 import torch.nn.functional as F
 from warnings import warn
 from torch.utils.model_zoo import load_url
-import image_captions.log as log
+import image_captioning_bot.log as log
 
 
 class BeheadedInception3(Inception3):

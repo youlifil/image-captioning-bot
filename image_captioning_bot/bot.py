@@ -1,13 +1,13 @@
 import telebot
-from auth import bot_token
-import log
+from image_captioning_bot.auth import bot_token
+import image_captioning_bot.log as log
 from tg_tqdm import tg_tqdm
 
 import PIL
 import urllib
 import numpy as np
 
-import image_captions as imcap
+import image_captioning_bot.model as model
 
 HELLO_STR = """
 Привет, я бот, я делаю Image Captioning.
@@ -24,7 +24,7 @@ def _progress_bar(step, total, chat_id):
 
 def run_bot():
     logger = log.logger()
-    imcap.init_model(stuff_folder='data', logger=logger)
+    model.init_model()
 
     bot = telebot.TeleBot(bot_token)
 
@@ -46,7 +46,7 @@ def run_bot():
         bot.send_message(message.chat.id, "Подождите немножко... (или множко)")
 
         image = image_from_message(bot, message)
-        captions = imcap.generate_captions(
+        captions = model.generate_captions(
                         image, 
                         step_callback=lambda step, total: _progress_bar(step, total, message.chat.id))
 

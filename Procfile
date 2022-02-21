@@ -1,1 +1,1 @@
-worker: python main.py
+worker: python -m image_captioning_bot

@@ -1,7 +1,7 @@
 import os
 import gdown
 
-class Config: pass
+BASE_PATH = 'data'
 
 def download_google_file(url, output):
     if os.path.isfile(output):
@@ -9,9 +9,5 @@ def download_google_file(url, output):
     gdown.download(url, output, quiet=False)
 
 
-def set_base(base_path):
-    Config.base_path = base_path
-
-
-def path(filename):
-    return os.path.join(Config.base_path, filename)
+def bot_path(filename):
+    return os.path.join(BASE_PATH, filename)

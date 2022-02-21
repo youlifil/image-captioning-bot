@@ -1,5 +1,4 @@
 /data/attnet-250e-30trainbatch.*
-*/__pycache__/*
-/__pycache__/*
-/.vscode/*
-/logs/*
+**/__pycache__/
+/.vscode/
+/logs/
